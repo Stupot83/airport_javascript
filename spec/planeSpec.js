@@ -1,10 +1,10 @@
 (function () {
   'use strict';
 
-  describe('Plane tests', function () {
+  describe('Plane tests', () => {
     let plane;
 
-    beforeEach(function () {
+    beforeEach(() => {
       plane = new Plane();
     });
 
@@ -48,4 +48,5 @@
       expect(plane.flying).toEqual(true);
     });
   });
+
 }());

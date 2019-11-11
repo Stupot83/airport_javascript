@@ -1,21 +1,25 @@
 class Plane {
   constructor() {
-    this.flying = false;
+    this._flying = false;
   }
 
-  flying() {
-    this.flying = true;
+  get flying() {
+    return this._flying;
+  }
+
+  set flying(status) {
+    this._flying = status;
   }
 
   land() {
-    this.flying = false;
+    this._flying = false;
   }
 
   take_off() {
-    this.flying = true;
+    this._flying = true;
   }
 
   airborne() {
-    return this.flying == true ? "flying" : "landed";
+    return this._flying == true ? "flying" : "landed";
   }
 }

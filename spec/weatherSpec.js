@@ -1,10 +1,10 @@
 (function () {
   'use strict';
 
-  describe('Weather tests', function () {
+  describe('Weather tests', () => {
     let weather;
 
-    beforeEach(function () {
+    beforeEach(() => {
       weather = new Weather();
     });
 
