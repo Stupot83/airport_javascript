@@ -63,4 +63,5 @@
       expect(weather.good_weather).toEqual(false);
     });
   });
+  
 }());

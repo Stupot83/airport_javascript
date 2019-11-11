@@ -4,48 +4,65 @@ class Airport {
     this.capacity = capacity;
   }
 
-  // instruct_landing(plane) {
-  //   capacity_for_landing();
-  //   forecast_for_landing();
-  //   hangar << plane
-  //   plane.landed!
-  // }
+  instruct_landing(plane) {
+    this.capacity_for_landing();
+    this.forecast_for_landing();
+    this.hangar.push(plane);
+    plane.land();
+  }
 
+  get landed_planes_total() {
+    return this.hangar.length;
+  }
+
+  get full() {
+    return this.landed_planes_total >= this.capacity;
+  }
+
+  get capacity_for_landing() {
+    const success = !this.full;
+      if (success) {
+        return { success };
+      } else {
+        return { success, message: "Hangar capacity at maximum, please continue to circle" };
+      }
+  }
+
+  instruct_take_off(plane) {
+    this.capacity_for_take_off();
+    this.forecast_for_take_off();
+    this.hangar.delete(plane);
+    plane.take_off();
+  }
+
+  get capacity_for_take_off() {
+    const success = !this.empty;
+      if (success) {
+        return { success };
+      } else {
+        return { success, message: "You ain't getting on no plane fool!" };
+      }
+  }
+
+  get forecast_for_landing() {
+    const success = this.good_weather;
+      if (success) {
+        return { success };
+      } else {
+        return { success, message: "Storms persist, please continue to circle" };
+      }
+  }
+
+  get forecast_for_take_off() {
+    const success = this.good_weather;
+      if (success) {
+        return { success };
+      } else {
+        return { success, message: "Storms persist, take-off is delayed" };
+      }
+  }
+
+  get empty() {
+    return this.hangar.length == 0;
+  }
 }
-
-  // def instruct_take_off(plane)
-  //   capacity_for_take_off
-  //   forecast_for_take_off
-  //   hangar.delete(plane)
-  //   plane.take_off!
-  // end
-
-  // def landed_planes_total
-  //   hangar.length
-  // end
-
-  // private
-
-  // def capacity_for_landing
-  //   raise "Hangar capacity at maximum, please continue to circle" if full?
-  // end
-
-  // def capacity_for_take_off
-  //   raise "You ain't getting on no plane fool" if empty?
-  // end
-
-  // def forecast_for_landing
-  //   raise "Storms persist, please continue to circle" unless good_weather?
-  // end
-
-  // def forecast_for_take_off
-  //   raise "Storms persist, take-off is delayed" unless good_weather?
-  // end
-
-  // def full?
-  //   landed_planes_total >= @capacity
-  // end
-
-  // def empty?
-  //   hangar.length.zero?
-  // end

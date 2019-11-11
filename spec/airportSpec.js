@@ -3,31 +3,38 @@
 
   describe('Airport tests', () => {
     let airport;
+    let plane;
+    let weather;
 
     beforeEach(() => {
       airport = new Airport();
+      let plane = new Plane();
+      let weather = new Weather();
     });
 
     it("successfully instantiates the airport class", () => {
       expect(airport).toBeInstanceOf(Airport);
     });
 
-    // it("is expected to respond to instruct_landing", () => {
-    //   expect(typeof airport.instruct_landing).toBe("function");
-    // });
+    it("is expected to respond to instruct_landing", () => {
+      expect(typeof airport.instruct_landing).toBe("function");
+    });
 
-    // it("is expected to respond to instruct_landing", () => {
-    //   expect(typeof airport.instruct_take_off).toBe("function");
-    // });
+    it("is expected to respond to instruct_landing", () => {
+      expect(typeof airport.instruct_take_off).toBe("function");
+    });
 
   });
-}());
-  // context "landing and taking off" do
-  //   it "a plane can land at the airport" do
-  //     allow(airport).to receive(:good_weather?).and_return(true)
-  //     expect(plane).to receive(:landed!)
-  //     airport.instruct_landing(plane)
-  //   end
+
+  // describe("landing and taking off", () => {
+  //   it("a plane can land at the airport", () => {
+  //     spyOn(weather, 'good_weather').and.returnValue(true);
+  //     spyOn(plane, 'land').and.returnValue(true);
+  //     airport.instruct_landing(plane);
+  //   });
+  // });
+
+  }());
 
   //   it "a plane can take off from the airport" do
   //     allow(airport).to receive(:good_weather?).and_return(true)
