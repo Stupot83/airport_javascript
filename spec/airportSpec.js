@@ -8,12 +8,20 @@
 
     beforeEach(() => {
       airport = new Airport();
-      let plane = new Plane();
-      let weather = new Weather();
+      plane = new Plane();
+      weather = new Weather();
     });
 
     it("successfully instantiates the airport class", () => {
       expect(airport).toBeInstanceOf(Airport);
+    });
+
+    it("is expected to respond to hangar", () => {
+      expect(typeof airport.hangar).toBe("object");
+    });
+
+    it("is expected to respond to capacity", () => {
+      expect(typeof airport.capacity).toBe("number");
     });
 
     it("is expected to respond to instruct_landing", () => {
@@ -24,79 +32,115 @@
       expect(typeof airport.instruct_take_off).toBe("function");
     });
 
+    it("is expected to respond to landed_planes_total", () => {
+      expect(typeof airport.landed_planes_total).toBe("number");
+    });
+
+    it("is expected to respond to full", () => {
+      expect(typeof airport.full).toBe("boolean");
+    });
+
+    it("is expected to respond to capacity_for_landing", () => {
+      expect(typeof airport.capacity_for_landing).toBe("function");
+    });
+
+    it("is expected to respond to capacity_for_take_off", () => {
+      expect(typeof airport.capacity_for_take_off).toBe("function");
+    });
+
+    it("is expected to respond to forecast_for_landing", () => {
+      expect(typeof airport.forecast_for_landing).toBe("function");
+    });
+
+    it("is expected to respond to forecast_for_take_off", () => {
+      expect(typeof airport.forecast_for_take_off).toBe("function");
+    });
+
+    it("is expected to respond to empty", () => {
+      expect(typeof airport.empty).toBe("boolean");
+    });
+
+    describe("landing and taking off", () => {
+      it("a plane can land at the airport", () => {
+        spyOn(weather, 'good_weather').and.returnValue(false);
+        airport.instruct_landing(plane);
+        expect(airport.hangar.length).toEqual(1);
+      });
+
+      it("a plane can take off from the airport", () => {
+        spyOn(weather, 'good_weather').and.returnValue(true);
+        spyOn(plane, 'land').and.returnValue(true);
+        airport.instruct_landing(plane);
+        spyOn(plane, 'take_off').and.returnValue(true);
+        airport.instruct_take_off(plane);
+        expect(airport.hangar.length).toEqual(0);
+      });
+    });
+
+    describe("capacity checks", () => {
+      it("confirms the airport is empty when there are no planes landed", () => {
+        spyOn(weather, 'good_weather').and.returnValue(true);
+        spyOn(plane, 'land').and.returnValue(true);
+        airport.instruct_landing(plane);
+        spyOn(plane, 'take_off').and.returnValue(true);
+        airport.instruct_take_off(plane);
+        expect(plane.airborne()).toEqual("landed");
+        expect(airport.hangar.length).toEqual(0);
+    });
+
+      it("if the hangar is empty a plane cannot take off and there is a message", () => {
+        airport.instruct_take_off(plane);
+        expect(airport.capacity_for_take_off().message).toEqual("You ain't getting on no plane fool!");
+      });
+
+      it("if the hangar is full a plane cannot land and receives a message", () => {
+        for (var i = 0; i < 20; i++) {
+          airport.instruct_landing(plane);
+        }
+        airport.instruct_landing(plane);
+        expect(airport.capacity_for_landing().message).toEqual("Hangar capacity at maximum, please continue to circle!");
+      });
+
+      it("allows the user to change the hangar capacity for a different airport", () => {
+        let test_airport = new Airport( { capacity: 50 });
+        expect(test_airport.capacity).toEqual(50);
+      });
+    });
+
+    describe("weather", () => {
+      it("if the weather is stormy, a plane cannot take-off", () => {
+        spyOn(weather, 'good_weather').and.returnValue(true);
+        spyOn(plane, 'land').and.returnValue(true);
+        airport.instruct_landing(plane);
+        spyOn(weather, 'good_weather').and.returnValue(false);
+        airport.instruct_take_off(plane);
+        expect(airport.forecast_for_take_off().message).toEqual("Storms persist, take-off is delayed!");
+      });
+
+      it("if the weather is stormy, a plane cannot land", () => {
+        spyOn(weather, 'good_weather').and.returnValue(false);
+        airport.instruct_landing(plane);
+        expect(airport.forecast_for_landing().message).toEqual("Storms persist, please continue to circle!");
+      });
+    });
+
+    describe("multiple planes can land or take-off from the same airport", () => {
+      it("a maximum of 20 planes can land if airport is empty in clear weather", () => {
+        spyOn(weather, 'good_weather').and.returnValue(true);
+        for (var i = 0; i < 20; i++) {
+          airport.instruct_landing(plane);
+        }
+        expect(airport.landed_planes_total).toEqual(20);
+      });
+
+      it("a maximum of 20 planes can take-off from same airport if full and clear weather", () => {
+        spyOn(weather, 'good_weather').and.returnValue(true);
+        for (var i = 0; i < 20; i++) {
+          airport.instruct_take_off(plane);
+        }
+        expect(airport.landed_planes_total).toEqual(0);
+      });
+    });
   });
 
-  // describe("landing and taking off", () => {
-  //   it("a plane can land at the airport", () => {
-  //     spyOn(weather, 'good_weather').and.returnValue(true);
-  //     spyOn(plane, 'land').and.returnValue(true);
-  //     airport.instruct_landing(plane);
-  //   });
-  // });
-
-  }());
-
-  //   it "a plane can take off from the airport" do
-  //     allow(airport).to receive(:good_weather?).and_return(true)
-  //     expect(plane).to receive(:landed!)
-  //     airport.instruct_landing(plane)
-  //     expect(plane).to receive(:take_off!)
-  //     airport.instruct_take_off(plane)
-  //   end
-  // end
-
-  // context "capacity checks" do
-  //   it "confirms the airport is empty when there are no planes landed" do
-  //     allow(airport).to receive(:good_weather?).and_return(true)
-  //     expect(plane).to receive(:landed!)
-  //     airport.instruct_landing(plane)
-  //     expect(plane).to receive(:take_off!)
-  //     airport.instruct_take_off(plane)
-  //     expect(airport.hangar).to be_empty
-  //   end
-
-  //   it "if the hangar is empty a plane cannot take off and there is a message" do
-  //     allow(airport).to receive(:good_weather?).and_return(true)
-  //     expect(lambda { airport.instruct_take_off(plane) }).to raise_error(RuntimeError, "You ain't getting on no plane fool")
-  //   end
-
-  //   it "if the hangar is full a plane cannot land and receives a message" do
-  //     allow(airport).to receive(:good_weather?).and_return(true)
-  //     allow(plane).to receive(:landed!)
-  //     expect { 21.times { airport.instruct_landing(plane) } }.to raise_error(RuntimeError, "Hangar capacity at maximum, please continue to circle")
-  //   end
-
-  //   it "allows the user to change the hangar capacity for a different airport" do
-  //     test_capacity = rand(1..100)
-  //     test_airport = Airport.new(test_capacity)
-  //     expect(test_airport.capacity).to eq test_capacity
-  //   end
-  // end
-
-  // context "weather" do
-  //   it "if the weather is stormy, a plane cannot take-off" do
-  //     allow(airport).to receive(:good_weather?).and_return(true)
-  //     expect(plane).to receive(:landed!)
-  //     airport.instruct_landing(plane)
-  //     allow(airport).to receive(:good_weather?).and_return(false)
-  //     expect { airport.instruct_take_off(plane) }.to raise_error("Storms persist, take-off is delayed")
-  //   end
-
-  //   it "if the weather is stormy, a plane cannot land" do
-  //     allow(airport).to receive(:good_weather?).and_return(false)
-  //     expect { airport.instruct_landing(plane) }.to raise_error("Storms persist, please continue to circle")
-  //   end
-  // end
-
-  // context "multiple planes can land or take-off from the same airport" do
-  //   before { allow(airport).to receive(:good_weather?).and_return(true) }
-  //   it "a maximum of 20 planes can land if airport is empty in clear weather" do
-  //     expect { planes.each { |plane| airport.instruct_landing(plane) } }.to change { airport.landed_planes_total }.from(0).to(20)
-  //   end
-
-  //   it "a maximum of 20 planes can take-off from same airport if full and clear weather" do
-  //     planes.each { |plane| airport.instruct_landing(plane) }
-  //     expect { planes.each { |plane| airport.instruct_take_off(plane) } }.to change { airport.landed_planes_total }.from(20).to(0)
-
-
-// let(:planes) { 20.times.collect { Plane.new } }
+}());

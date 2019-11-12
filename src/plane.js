@@ -20,6 +20,6 @@ class Plane {
   }
 
   airborne() {
-    return this._flying == true ? "flying" : "landed";
+    return this._flying === true ? "flying" : "landed";
   }
 }

@@ -12,11 +12,11 @@
       expect(typeof weather.forecast).toBe("string");
     });
 
-    it("is expected to respond to forecast", () => {
+    it("is expected to respond to magic_8_ball", () => {
       expect(typeof weather.magic_8_ball).toBe("number");
     });
 
-    it("is expected to respond to forecast", () => {
+    it("is expected to respond to good_weather", () => {
       expect(typeof weather.good_weather).toBe("boolean");
     });
 

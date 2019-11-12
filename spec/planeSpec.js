@@ -9,14 +9,18 @@
     });
 
     it("is expected to respond to flying", () => {
+      expect(typeof plane.flying).toBe("boolean");
+    });
+
+    it("is expected to respond to land", () => {
       expect(typeof plane.land).toBe("function");
     });
 
-    it("is expected to respond to flying", () => {
+    it("is expected to respond to take_off", () => {
       expect(typeof plane.take_off).toBe("function");
     });
 
-    it("is expected to respond to flying", () => {
+    it("is expected to respond to airborne", () => {
       expect(typeof plane.airborne).toBe("function");
     });
 
